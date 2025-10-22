@@ -1,0 +1,1 @@
+fetch('data.json').then(r=>r.json()).then(data=>{window.DATA=data;document.getElementById('app').innerHTML='<h2>World Food Explorer Demo</h2><pre style="white-space:pre-wrap">Loaded countries: '+Object.keys(data).join(', ')+'</pre>';console.log('Loaded data',data)})
