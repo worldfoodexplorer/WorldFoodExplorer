@@ -1,26 +1,23 @@
-# 🌍 World Food Explorer (GitHub-ready)
+# 🌍 World Food Explorer — Official (v2)
 
-This React + Vite project displays the first page of *World Food Explorer*, listing countries.
+This is the official first page for **World Food Explorer** (production-style):
 
-## 🏁 How to run locally
+- Photo-based country cards (online images)
+- Header banner with logo
+- Muted image ad box labeled "Advertisement"
+- Responsive and ready for GitHub Pages
+
+## Run locally
 ```bash
 npm install
 npm run dev
 ```
 
-## 🚀 Deploy to GitHub Pages
-1. Push this code to your GitHub repo.
-2. Go to `Settings → Pages`.
-3. Under *Build and deployment*, select **Deploy from branch**, set branch to `gh-pages`.
-4. Your site will be live at:
-   `https://<username>.github.io/world-food-explorer/`
+## Deploy to GitHub Pages
+1. Push this repo to GitHub (e.g. `world-food-explorer`).
+2. In repository **Settings → Pages**, select branch `gh-pages` (or use GitHub Actions) and set folder `/ (root)`.
+3. The site will be available at `https://<username>.github.io/world-food-explorer/`
 
-Alternatively, you can use:
-```bash
-npm run deploy
-```
-
-## 🧩 Features
-- Clean responsive layout
-- React + Vite setup
-- Easy GitHub Pages deployment
+## Notes
+- Images use lightweight online image URLs (Unsplash featured queries). Replace them with your own hosted images if desired.
+- You can customize the ad image by editing `src/App.jsx`.
