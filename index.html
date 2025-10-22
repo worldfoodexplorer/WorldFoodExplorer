@@ -1,7 +1,4 @@
-<!-- Ad Banner -->
-<div class="ad-banner">
-  <img src="https://via.placeholder.com/728x90.png?text=Your+Ad+Here" alt="Ad Banner">
-</div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,6 +11,19 @@
       margin: 0;
       padding: 0;
       color: #222;
+    }
+
+    .ad-banner {
+      text-align: center;
+      margin: 10px 0;
+      background: #fff;
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .ad-banner img {
+      max-width: 100%;
+      border-radius: 8px;
     }
 
     header {
@@ -78,6 +88,11 @@
   </style>
 </head>
 <body>
+  <!-- ✅ Ad Banner -->
+  <div class="ad-banner">
+    <img src="https://via.placeholder.com/728x90.png?text=Your+Ad+Here" alt="Ad Banner">
+  </div>
+
   <header>
     <h1>🌍 World Food Explorer</h1>
     <p>Discover traditional dishes by country</p>
@@ -127,7 +142,6 @@
   <script>
     function goToCountry(country) {
       alert(`You selected ${country}. Next page coming soon!`);
-      // Later: window.location.href = `${country.toLowerCase()}.html`;
     }
   </script>
 </body>
