@@ -140,9 +140,11 @@
   <footer>© 2025 World Food Explorer</footer>
 
   <script>
-    function goToCountry(country) {
-      alert(`You selected ${country}. Next page coming soon!`);
-    }
+  function goToCountry(country) {
+    // Redirect to the country page
+    const fileName = country.toLowerCase() + ".html";
+    window.location.href = fileName;
+  }
   </script>
 </body>
 </html>
