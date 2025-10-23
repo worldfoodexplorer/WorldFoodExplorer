@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>భారతీయ వంటకాలు — World Food Explorer (Telugu)</title>
+  <meta name="description" content="India recipes (Telugu UI) - Breakfast, Lunch, Snacks, Dinner, Travelling foods, Festivals" />
+  <style>
+    /* Simple responsive light-green theme */
+    body { font-family: "Segoe UI", Roboto, sans-serif; margin:0; background:#f0f9f1; color:#222; }
+    .topbar { background:#2e7d32; color:#fff; padding:18px 12px; text-align:center; }
+    .topbar h1 { margin:0; font-size:20px; }
+    .ad { text-align:center; padding:8px; background:#fff; border-bottom:1px solid #e6eee6; }
+    .container { max-width:980px; margin:14px auto; padding:8px 14px; }
+    .section { background:#fff; border-radius:12px; padding:12px; margin:12px 0; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+    .section h2 { color:#1b5e20; margin:0 0 8px 0; font-size:18px; display:flex; justify-content:space-between; align-items:center; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:12px; margin-top:12px; }
+    .card { background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,0.06); display:flex; flex-direction:column; }
+    .card img { width:100%; height:140px; object-fit:cover; }
+    .card .body { padding:10px; flex:1; display:flex; flex-direction:column; }
+    .dish-title { font-weight:700; color:#2e7d32; margin-bottom:6px; font-size:15px; }
+    .meta { font-size:13px; color:#555; margin-bottom:8px; }
+    .foot { display:flex; justify-content:space-between; align-items:center; margin-top:auto; }
+    .btn { background:#2e7d32; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; font-weight:700; }
+    .btn:active{ transform:translateY(1px); }
+    .small { font-size:12px; color:#666; }
+    .toggle { display:flex; gap:8px; align-items:center; }
+    .back { margin-top:10px; display:inline-block; color:#2e7d32; text-decoration:none; font-weight:700; }
+    footer { text-align:center; color:#666; font-size:13px; padding:18px 0; }
+    @media (max-width:520px){ .card img{height:110px} .section h2{font-size:16px} }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>భారతీయ వంటకాలు — World Food Explorer</h1>
+    <div style="font-size:13px; margin-top:6px">UI in Telugu — Recipes shown in English</div>
+  </div>
+
+  <div class="ad">
+    <!-- Ad placeholder -->
+    <img alt="Ad" src="https://via.placeholder.com/728x90.png?text=Ad+Banner" style="max-width:96%; border-radius:8px;">
+  </div>
+
+  <div class="container">
+    <!-- Controls -->
+    <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;">
+      <a class="back" href="index.html">⬅︎ హోమ్</a>
+      <div class="toggle">
+        <label class="small">డిన్నర్ క్రమం:</label>
+        <button id="dinnerSortBtn" class="btn" style="padding:6px 10px; font-size:13px">Low → High</button>
+      </div>
+    </div>
+
+    <!-- Breakfast -->
+    <section id="breakfast" class="section">
+      <h2>ఉదయం (Breakfast)</h2>
+      <div class="grid" id="breakfastGrid"></div>
+    </section>
+
+    <!-- Lunch -->
+    <section id="lunch" class="section">
+      <h2>మధ్యాహ్న భోజనం (Lunch)</h2>
+      <div class="grid" id="lunchGrid"></div>
+    </section>
+
+    <!-- Snacks -->
+    <section id="snacks" class="section">
+      <h2>స్వల్పాహారాలు (Snacks)</h2>
+      <div class="grid" id="snacksGrid"></div>
+    </section>
+
+    <!-- Dinner -->
+    <section id="dinner" class="section">
+      <h2>రాత్రి భోజనం (Dinner)</h2>
+      <div class="grid" id="dinnerGrid"></div>
+    </section>
+
+    <!-- Travelling -->
+    <section id="travel" class="section">
+      <h2>ప్రయాణ సమయంలో తినడానికి సదుపాయమైన: (Travelling Foods)</h2>
+      <div class="grid" id="travelGrid"></div>
+    </section>
+
+    <!-- Festivals -->
+    <section id="festivals" class="section">
+      <h2>పండుగల ప్రత్యేక వంటకాలు (Festivals)</h2>
+      <div id="festivalList"></div>
+    </section>
+
+    <a class="back" href="index.html">⬅︎ హోమ్</a>
+  </div>
+
+  <footer>
+    © <span id="year"></span> World Food Explorer — India (Telugu UI)
+  </footer>
+
+  <script>
+    // ---------- Utility helpers ----------
+    function seedImg(name, w=600,h=400){
+      // use a safe picsum seed for consistent images
+      const s = encodeURIComponent(name.toLowerCase().replace(/\s+/g,'-'));
+      return `https://picsum.photos/seed/${s}/${w}/${h}`;
+    }
+    function ytSearchUrl(title, lang='Telugu'){
+      // simple YouTube search link (shows relevant videos in chosen language)
+      return `https://www.youtube.com/results?search_query=${encodeURIComponent(title + ' recipe ' + lang)}`;
+    }
+    function fmtViews(n){
+      if(!n) return '0';
+      if(n>=1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
+      if(n>=1000) return Math.round(n/1000)+'K';
+      return String(n);
+    }
+
+    // ---------- Datasets (short demo entries, expandable) ----------
+    // Breakfast 10
+    const BREAKFAST = [
+      {name:'Idli', desc:'Steamed rice-lentil cakes', calories:160, prep:20, serves:2},
+      {name:'Dosa', desc:'Crispy fermented crepe', calories:230, prep:25, serves:1},
+      {name:'Upma', desc:'Semolina savory porridge', calories:210, prep:15, serves:1},
+      {name:'Poha', desc:'Flattened rice with spices', calories:200, prep:12, serves:1},
+      {name:'Paratha', desc:'Stuffed flatbread', calories:320, prep:25, serves:1},
+      {name:'Pongal', desc:'Rice and mung dal porridge', calories:250, prep:25, serves:2},
+      {name:'Uttapam', desc:'Thicker pancake with toppings', calories:260, prep:20, serves:1},
+      {name:'Pesarattu', desc:'Green gram crepe', calories:190, prep:20, serves:1},
+      {name:'Medu Vada', desc:'Crispy lentil donut', calories:180, prep:20, serves:1},
+      {name:'Masala Omelette', desc:'Spiced egg omelette', calories:220, prep:10, serves:1},
+    ];
+
+    // Lunch 30 (sample list; you can replace/expand)
+    const LUNCH = [
+      "Chicken Biryani","Veg Pulao","Paneer Butter Masala","Dal Tadka","Sambar Rice",
+      "Fish Curry","Curd Rice","Egg Curry","Pulihora","Pav Bhaji",
+      "Chole Bhature","Rajma Chawal","Aloo Gobi","Mutton Curry","Prawn Curry",
+      "Korma","Paneer Tikka","Hyderabadi Biryani","Pulao with Raita","Pongal Rice",
+      "Veg Kurma","Lemon Rice","Bhindi Masala","Malai Kofta","Chicken 65",
+      "Chicken Fry","Mixed Veg Sabzi","Kadhi Chawal","Schezwan Noodles","Methi Thepla"
+    ].map((n,i)=>({
+      name:n,
+      desc: n + ' — popular lunch item',
+      calories: Math.round(300 + Math.random()*500),
+      prep: Math.round(15 + Math.random()*80),
+      serves: Math.floor(1 + Math.random()*4)
+    }));
+
+    // Snacks 20
+    const SNACKS = [
+      "Samosa","Mirchi Bajji","Pakora","Masala Vada","Paneer 65","Dahi Puri","Bread Cutlet",
+      "Veg Puff","Murukku","Pav Bhaji (snack)","Bhel Puri","Pani Puri","Kachori","Chaat",
+      "Aloo Tikki","Banana Fritters","Roasted Peanuts","Bombay Sandwich","Mini Idli","Ribbon Pakoda"
+    ].map((n,i)=>({
+      name:n,
+      desc: n + ' — evening snack',
+      calories: Math.round(150 + Math.random()*350),
+      prep: Math.round(5 + Math.random()*45),
+      serves: Math.floor(1 + Math.random()*3)
+    }));
+
+    // Travelling Foods (10)
+    const TRAVELLING = [
+      "Peanut Chikki","Sukku Mix","Dry Fruit Mix","Murukku Pack","Banana Chips",
+      "Kaju Roll","Masala Peanuts","Energy Ladoo","Sattu Drink","Khakhra"
+    ].map((n,i)=>({
+      name:n,
+      desc: n + ' — good for travel',
+      calories: Math.round(120 + Math.random()*400),
+      prep: Math.round(2 + Math.random()*30),
+      serves: 1
+    }));
+
+    // Dinner: pick 7 dishes (we'll choose from lunch/snacks and set calories intentionally)
+    let DINNER = [
+      {name:'Grilled Fish', desc:'Light grilled fish', calories:260, prep:25, serves:2},
+      {name:'Veg Stir Fry', desc:'Stir fried seasonal veggies', calories:180, prep:15, serves:2},
+      {name:'Lemon Rice', desc:'Tangy lemon rice', calories:300, prep:20, serves:2},
+      {name:'Dal Khichdi', desc:'Comforting dal-khichdi', calories:220, prep:30, serves:2},
+      {name:'Tandoori Chicken', desc:'Spiced roasted chicken', calories:420, prep:45, serves:2},
+      {name:'Palak Paneer', desc:'Spinach and cottage cheese', calories:340, prep:30, serves:2},
+      {name:'Roti & Sabzi', desc:'Whole wheat roti with vegetables', calories:280, prep:20, serves:2},
+    ];
+    // sort low->high by default
+    let dinnerLowToHigh = true;
+    DINNER.sort((a,b)=>a.calories-b.calories);
+
+    // Festivals: 5 festivals × 5 dishes (sample)
+    const FESTIVALS = [
+      { festival:'Diwali', dishes:['Gulab Jamun','Kaju Katli','Besan Ladoo','Chakli','Chivda'] },
+      { festival:'Dussehra', dishes:['Chicken Biryani','Kheer','Sweets','Puri','Dry Fruit Barfi'] },
+      { festival:'Pongal', dishes:['Ven Pongal','Sakkarai Pongal','Medu Vada','Idli','Sundal'] },
+      { festival:'Holi', dishes:['Gujiya','Thandai','Dahi Vada','Puran Poli','Malpua'] },
+      { festival:'Ramadan Eid', dishes:['Sheer Khurma','Mutton Biryani','Kebabs','Sweet Seviyan','Dates Delight'] }
+    ];
+
+    // ---------- Render helpers ----------
+    function makeCard(item){
+      // item: {name,desc,calories,prep,serves}
+      const img = seedImg(item.name,640,420);
+      const views = Math.round(50000 + Math.random()*5000000);
+      const yurl = ytSearchUrl(item.name, 'Telugu');
+      return `
+        <article class="card">
+          <img src="${img}" alt="${item.name}">
+          <div class="body">
+            <div class="dish-title">${item.name}</div>
+            <div class="meta">${item.desc}</div>
+            <div class="small">⏱ ${item.prep} min • 🍽 Serves ${item.serves} • 🔥 ${item.calories} kcal</div>
+            <div class="foot" style="margin-top:8px;">
+              <div class="small">🎥 ${fmtViews(views)} views</div>
+              <div>
+                <a class="btn" href="${yurl}" target="_blank" rel="noopener">Watch</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGrid(id, items){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.innerHTML = items.map(i=>makeCard(i)).join('');
+    }
+
+    // ---------- Initial render ----------
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Breakfast
+    renderGrid('breakfastGrid', BREAKFAST);
+
+    // Lunch
+    renderGrid('lunchGrid', LUNCH);
+
+    // Snacks
+    renderGrid('snacksGrid', SNACKS);
+
+    // Travelling
+    renderGrid('travelGrid', TRAVELLING);
+
+    // Dinner
+    function renderDinner(){
+      const list = DINNER.slice();
+      if(!dinnerLowToHigh) list.reverse();
+      renderGrid('dinnerGrid', list);
+    }
+    renderDinner();
+
+    // Dinner toggle
+    document.getElementById('dinnerSortBtn').addEventListener('click', ()=>{
+      dinnerLowToHigh = !dinnerLowToHigh;
+      document.getElementById('dinnerSortBtn').textContent = dinnerLowToHigh ? 'Low → High' : 'High → Low';
+      renderDinner();
+    });
+
+    // Festivals
+    const festivalList = document.getElementById('festivalList');
+    festivalList.innerHTML = FESTIVALS.map(f=>{
+      const cards = f.dishes.map(d=> {
+        // small object for festival dish
+        const obj = { name: d, desc:`${d} — ${f.festival} special`, calories: Math.round(200 + Math.random()*600), prep: Math.round(10 + Math.random()*90), serves: Math.floor(1+Math.random()*6) };
+        return makeCard(obj);
+      }).join('');
+      return `<div style="margin-bottom:16px;"><h3 style="margin:8px 0;">🎉 ${f.festival}</h3><div class="grid">${cards}</div></div>`;
+    }).join('');
+
+    // ---------- Save selected language (Telugu page loaded) ----------
+    // If user came here from language popup we already saved in localStorage.
+    // But ensure we overwrite to Telugu explicitly for this file:
+    localStorage.setItem('selectedLanguage', 'తెలుగు');
+
+    // ---------- Basic "not found" safety check for images (optional) ----------
+    // (If picsum fails, user still sees broken image icon — you can replace with stored assets later.)
+  </script>
+</body>
+  </html>
