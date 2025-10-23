@@ -190,46 +190,70 @@
   </div>
 
   <footer>© 2025 World Food Explorer</footer>
+<script>
+  // ✅ Grab modal and button container
+  const modal = document.getElementById('languageModal');
+  const languageButtons = document.getElementById('languageButtons');
 
-  <script>
-const modal = document.getElementById('languageModal');
-const languageButtons = document.getElementById('languageButtons');
-
-function goToCountry(country) {
-  if (country === 'India') {
-    showLanguageOptions(['English', 'हिंदी', 'తెలుగు', 'தமிழ்', 'ಕನ್ನಡ'], country);
-  } else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
-    showLanguageOptions(['हिंदी'], country);
-  } else {
-    localStorage.setItem('selectedLanguage', 'English');
-    window.location.href = `${country.toLowerCase()}.html`;
-  }
-}
-
-function showLanguageOptions(langs, country) {
-  modal.style.display = 'flex';
-  languageButtons.innerHTML = '';
-  langs.forEach(lang => {
-    const btn = document.createElement('button');
-    btn.textContent = lang;
-    btn.classList.add('lang-btn');
-    btn.style.background = '#43a047';
-    btn.style.color = '#fff';
-    btn.style.padding = '10px';
-    btn.style.borderRadius = '8px';
-    btn.style.border = 'none';
-    btn.onclick = () => {
-      localStorage.setItem('selectedLanguage', lang);
-      modal.style.display = 'none';
+  // ✅ Function runs when "Explore" button is clicked
+  function goToCountry(country) {
+    if (country === 'India') {
+      // India → Show popup with multiple options
+      showLanguageOptions(['English', 'हिंदी', 'తెలుగు', 'தமிழ்', 'ಕನ್ನಡ'], country);
+    } 
+    else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
+      // These countries → auto-set Hindi and go directly
+      localStorage.setItem('selectedLanguage', 'हिंदी');
       window.location.href = `${country.toLowerCase()}.html`;
-    };
-    languageButtons.appendChild(btn);
-  });
-}
+    } 
+    else {
+      // All other countries → auto-set English and go directly
+      localStorage.setItem('selectedLanguage', 'English');
+      window.location.href = `${country.toLowerCase()}.html`;
+    }
+  }
 
-window.onclick = function(event) {
-  if (event.target === modal) modal.style.display = 'none';
-};
-  </script>
+  // ✅ Create language selection popup dynamically
+  function showLanguageOptions(langs, country) {
+    modal.style.display = 'flex';
+    languageButtons.innerHTML = '';
+
+    langs.forEach(lang => {
+      const btn = document.createElement('button');
+      btn.textContent = lang;
+      btn.classList.add('lang-btn');
+
+      // button styling
+      btn.style.background = '#43a047';
+      btn.style.color = '#fff';
+      btn.style.padding = '10px 16px';
+      btn.style.margin = '6px';
+      btn.style.fontSize = '1rem';
+      btn.style.border = 'none';
+      btn.style.borderRadius = '8px';
+      btn.style.cursor = 'pointer';
+      btn.style.transition = '0.2s';
+
+      btn.onmouseenter = () => (btn.style.background = '#388e3c');
+      btn.onmouseleave = () => (btn.style.background = '#43a047');
+
+      // When a language is clicked
+      btn.onclick = () => {
+        localStorage.setItem('selectedLanguage', lang);
+        modal.style.display = 'none';
+        window.location.href = `${country.toLowerCase()}.html`;
+      };
+
+      languageButtons.appendChild(btn);
+    });
+  }
+
+  // ✅ Hide modal when clicking outside
+  window.onclick = function (event) {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+</script>
 </body>
 </html>
