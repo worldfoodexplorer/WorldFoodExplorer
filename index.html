@@ -192,40 +192,44 @@
   <footer>© 2025 World Food Explorer</footer>
 
   <script>
-    const modal = document.getElementById('languageModal');
-    const languageButtons = document.getElementById('languageButtons');
+const modal = document.getElementById('languageModal');
+const languageButtons = document.getElementById('languageButtons');
 
-    function goToCountry(country) {
-      if (country === 'India') {
-        showLanguageOptions(['English', 'हिंदी', 'తెలుగు', 'தமிழ்', 'ಕನ್ನಡ'], country);
-      } else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
-        showLanguageOptions(['हिंदी'], country);
-      } else {
-        localStorage.setItem('selectedLanguage', 'English');
-        window.location.href = `${country.toLowerCase()}.html`;
-      }
-    }
+function goToCountry(country) {
+  if (country === 'India') {
+    showLanguageOptions(['English', 'हिंदी', 'తెలుగు', 'தமிழ்', 'ಕನ್ನಡ'], country);
+  } else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
+    showLanguageOptions(['हिंदी'], country);
+  } else {
+    localStorage.setItem('selectedLanguage', 'English');
+    window.location.href = `${country.toLowerCase()}.html`;
+  }
+}
 
-    function showLanguageOptions(langs, country) {
-      modal.style.display = 'flex';
-      languageButtons.innerHTML = '';
-      langs.forEach(lang => {
-        const btn = document.createElement('button');
-        btn.textContent = lang;
-        btn.classList.add('lang-btn');
-        btn.onclick = () => {
-          localStorage.setItem('selectedLanguage', lang);
-          modal.style.display = 'none';
-          window.location.href = `${country.toLowerCase()}.html`;
-        };
-        languageButtons.appendChild(btn);
-      });
-    }
-
-    // Close popup when clicking outside it
-    window.onclick = function(event) {
-      if (event.target === modal) modal.style.display = 'none';
+function showLanguageOptions(langs, country) {
+  modal.style.display = 'flex';
+  languageButtons.innerHTML = '';
+  langs.forEach(lang => {
+    const btn = document.createElement('button');
+    btn.textContent = lang;
+    btn.classList.add('lang-btn');
+    btn.style.background = '#43a047';
+    btn.style.color = '#fff';
+    btn.style.padding = '10px';
+    btn.style.borderRadius = '8px';
+    btn.style.border = 'none';
+    btn.onclick = () => {
+      localStorage.setItem('selectedLanguage', lang);
+      modal.style.display = 'none';
+      window.location.href = `${country.toLowerCase()}.html`;
     };
+    languageButtons.appendChild(btn);
+  });
+}
+
+window.onclick = function(event) {
+  if (event.target === modal) modal.style.display = 'none';
+};
   </script>
 </body>
 </html>
