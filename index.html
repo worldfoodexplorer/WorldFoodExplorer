@@ -195,20 +195,23 @@
   const languageButtons = document.getElementById('languageButtons');
 
   function goToCountry(country) {
+    // For India → show multi-language options (without English)
     if (country === 'India') {
-      // English-only names for all languages
-      showLanguageOptions(['English', 'Hindi', 'Telugu', 'Tamil', 'Kannada'], country);
-    } else if (['Bangladesh', 'Pakistan', 'Afghanistan'].includes(country)) {
-      // Hindi only, but name shown in English
+      showLanguageOptions(['Hindi', 'Telugu', 'Tamil', 'Kannada'], country);
+
+    // For Bangladesh, Pakistan, Afghanistan → go directly to Hindi version
+    } else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
       localStorage.setItem('selectedLanguage', 'Hindi');
       window.location.href = `${country.toLowerCase()}.html`;
+
+    // For all other countries → go directly to English version
     } else {
-      // English-only countries
       localStorage.setItem('selectedLanguage', 'English');
-      window.location.href = `${country.toLowerCase()}.html`;
+      window.location.href = `${country.toLowerCase()}_english.html`;
     }
   }
 
+  // Function to show language selection modal for India
   function showLanguageOptions(langs, country) {
     modal.style.display = 'flex';
     languageButtons.innerHTML = '';
@@ -219,12 +222,16 @@
       btn.onclick = () => {
         localStorage.setItem('selectedLanguage', lang);
         modal.style.display = 'none';
-        window.location.href = `${country.toLowerCase()}.html`;
+
+        // Format like india_telugu.html, india_tamil.html, etc.
+        const formattedLang = lang.toLowerCase().replace(/\s+/g, '');
+        window.location.href = `${country.toLowerCase()}_${formattedLang}.html`;
       };
       languageButtons.appendChild(btn);
     });
   }
 
+  // Close popup when clicking outside the box
   window.onclick = function(event) {
     if (event.target === modal) modal.style.display = 'none';
   };
