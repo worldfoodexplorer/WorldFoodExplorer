@@ -85,6 +85,50 @@
       color: #555;
       margin-top: 30px;
     }
+
+    /* Popup modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 80%;
+      max-width: 320px;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+    }
+
+    .lang-btn {
+      display: block;
+      background: #43a047;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 6px 0;
+      width: 100%;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .lang-btn:hover {
+      background: #388e3c;
+    }
   </style>
 </head>
 <body>
@@ -137,13 +181,51 @@
     </div>
   </div>
 
+  <!-- 🌐 Language Selection Popup -->
+  <div id="languageModal" class="modal">
+    <div class="modal-content">
+      <h3>Choose your preferred language</h3>
+      <div id="languageButtons"></div>
+    </div>
+  </div>
+
   <footer>© 2025 World Food Explorer</footer>
 
   <script>
-  function goToCountry(country) {
-    const fileName = country.toLowerCase() + ".html";
-    window.location.href = "https://worldfoodexplorer.github.io/WorldFoodExplorer/" + fileName;
-  }
+    const modal = document.getElementById('languageModal');
+    const languageButtons = document.getElementById('languageButtons');
+
+    function goToCountry(country) {
+      if (country === 'India') {
+        showLanguageOptions(['English', 'हिंदी', 'తెలుగు', 'தமிழ்', 'ಕನ್ನಡ'], country);
+      } else if (country === 'Bangladesh' || country === 'Pakistan' || country === 'Afghanistan') {
+        showLanguageOptions(['हिंदी'], country);
+      } else {
+        localStorage.setItem('selectedLanguage', 'English');
+        window.location.href = `${country.toLowerCase()}.html`;
+      }
+    }
+
+    function showLanguageOptions(langs, country) {
+      modal.style.display = 'flex';
+      languageButtons.innerHTML = '';
+      langs.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.textContent = lang;
+        btn.classList.add('lang-btn');
+        btn.onclick = () => {
+          localStorage.setItem('selectedLanguage', lang);
+          modal.style.display = 'none';
+          window.location.href = `${country.toLowerCase()}.html`;
+        };
+        languageButtons.appendChild(btn);
+      });
+    }
+
+    // Close popup when clicking outside it
+    window.onclick = function(event) {
+      if (event.target === modal) modal.style.display = 'none';
+    };
   </script>
 </body>
 </html>
